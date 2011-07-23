@@ -24,6 +24,7 @@ setup(
     install_requires=[
         'configobj==4.6.0',
         'flask',
+        'gevent',
         'gunicorn',
         'pymongo',
     ],

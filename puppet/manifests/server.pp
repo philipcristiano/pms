@@ -13,6 +13,14 @@ class lucid64 {
     command => "/usr/bin/apt-get -q -q update",
   }
 
+  package { "libevent-dev":
+    ensure => present,
+  }
+
+  package { "python-dev":
+    ensure => present,
+  }
+
   package { "beanstalkd":
     ensure => present,
   }
