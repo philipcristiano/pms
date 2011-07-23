@@ -18,12 +18,31 @@ def record():
 
 @app.route('/list', methods=['GET'])
 def listen():
-    l = []
-    for event in events.find().sort('_id', -1):
-        event['time'] = str(event['_id'].generation_time)
-        event['_id'] = str(event['_id'])
-        l.append(event)
+    l = get_events()
     return jsonify({'events': l})
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = flatten(request.args)
+    l = get_events(query)
+    return jsonify({'events': l})
+
+def get_events(query=None):
+    l = []
+    for event in events.find(query).sort('_id', -1):
+        wrap_event(event)
+        l.append(event)
+    return l
+
+def wrap_event(event):
+    event['time'] = str(event['_id'].generation_time)
+    event['_id'] = str(event['_id'])
+
+def flatten(data):
+    new_data = {}
+    for key in data:
+        new_data[key] = data[key]
+    return new_data
 
 
 if __name__ == "__main__":
