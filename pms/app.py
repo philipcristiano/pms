@@ -13,7 +13,7 @@ events = db.events
 @app.route('/record', methods=['POST'])
 def record():
     data = json.loads(request.data)
-    print events.insert(data)
+    print events.insert(data, safe=True)
     return jsonify({'status':200})
 
 @app.route('/list', methods=['GET'])
