@@ -22,5 +22,5 @@ def deploy():
     put('vagrant.conf', '/tmp/pms.conf')
     sudo('mv /tmp/pms.conf /etc/pms')
     sudo('chown -R pms /etc/pms')
-    sudo('plug install --plug=/tmp/pms-0.1.0.pms.plug')
-    sudo('plug setup --plug=pms-0.1.0.pms.plug')
+    sudo('plug install --plug=/tmp/pms-0.1.1.pms.plug')
+    sudo('plug setup --plug=pms-0.1.1.pms.plug')
