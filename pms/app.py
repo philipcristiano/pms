@@ -1,6 +1,7 @@
 import json
 
 from flask import Flask, request, jsonify, Response
+from pymongo.objectid import ObjectId
 
 from pms.connection import get_connection
 
@@ -26,6 +27,13 @@ def search():
     query = flatten(request.args)
     l = get_events(query)
     return jsonify({'events': l})
+
+@app.route('/next/<oid>', methods=['GET'])
+def next(oid):
+    for event in events.find({'_id': {'$gt': ObjectId(oid)}}).sort('_id', 1):
+        wrap_event(event)
+        return jsonify(event)
+    return jsonify({})
 
 def get_events(query=None):
     l = []
