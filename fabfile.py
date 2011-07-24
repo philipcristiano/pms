@@ -14,6 +14,7 @@ def bootstrap():
     sudo('puppet apply /etc/puppet/manifests/server.pp')
     sudo('easy_install -U distribute')
     sudo('pip install plug')
+    sudo('pip install virtualenv')
 
 def deploy():
     put('pms-*.plug', '/tmp/')
