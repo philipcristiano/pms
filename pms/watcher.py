@@ -9,7 +9,7 @@ requester = JsonRequester(host)
 
 def main():
     events = requester.get('/list')
-    if len(events) > 0:
+    if events and len(events.get('events', [])) > 0:
         last_id = events['events'][0]['_id']
     else:
         last_id = 24 * '0'
