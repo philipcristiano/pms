@@ -21,10 +21,6 @@ class lucid64 {
     ensure => present,
   }
 
-  package { "beanstalkd":
-    ensure => present,
-  }
-
   package { "runit":
     ensure => present,
   }
