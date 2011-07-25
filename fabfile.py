@@ -24,3 +24,4 @@ def deploy():
     sudo('chown -R pms /etc/pms')
     sudo('plug install --plug=/tmp/pms-0.1.1.pms.plug')
     sudo('plug setup --plug=pms-0.1.1.pms.plug')
+    sudo('/etc/init.d/nginx restart')
