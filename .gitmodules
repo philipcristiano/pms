@@ -1,3 +1,6 @@
 [submodule "puppet/modules/mongodb"]
 	path = puppet/modules/mongodb
 	url = git://github.com/portertech/puppet-mongodb.git
+[submodule "puppet/modeuls/nginx"]
+	path = puppet/modeuls/nginx
+	url = https://github.com/wunki/puppet-module-nginx
