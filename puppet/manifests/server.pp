@@ -1,13 +1,13 @@
 
 class lucid64 {
 
-  file { "/etc/nginx/nginx.conf":
-    source => "file:///etc/puppet/files/etc/nginx/sites-enabled/pms"
-  }
-
   package { "nginx":
     ensure => present,
     require => Exec["Update APT"],
+  }
+
+  file { "/etc/nginx/nginx.conf":
+    source => "file:///etc/puppet/files/etc/nginx/sites-enabled/pms"
   }
 
   exec { "Update APT":
