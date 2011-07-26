@@ -7,6 +7,8 @@ logging events and creating aggregate reports.
 Installing Development Environment
 ----------------------------------
 
-    git://github.com/philipcristiano/pms.git
+    git clone git://github.com/philipcristiano/pms.git
+
     cd pms
+
     make requirements && vagrant up && make bootstrap && make deploy
