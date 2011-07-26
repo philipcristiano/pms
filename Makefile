@@ -25,18 +25,18 @@ requirements: virtualenv
 server:
 	$(PYTHON) pms/app.py
 
-deploy: create_plug
+deploy:
 	bin/fab deploy
 
 package_puppet:
 	tar cfz puppet.tgz puppet
 
-bootstrap: package_puppet, requirements
+.PHONY: puppet
+puppet: package_puppet
+	bin/fab bootstrap
+
+bootstrap: package_puppet requirements
 	vagrant up
 	git submodule init
 	git submodule update
 	bin/fab bootstrap
-
-create_plug: dist
-	bin/plug create dist/pms-0.1.2.tar.gz
-
