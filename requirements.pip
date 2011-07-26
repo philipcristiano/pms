@@ -1,4 +1,4 @@
-configobj=4.6.0
+configobj==4.6.0
 dingus
 jsonrequester
 flask

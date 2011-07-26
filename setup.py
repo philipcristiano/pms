@@ -33,6 +33,5 @@ setup(
     zip_safe=True,
     entry_points="""
     [console_scripts]
-    pms_watch = pms.watcher:main
     """
 )
