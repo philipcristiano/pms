@@ -31,7 +31,10 @@ deploy: create_plug
 package_puppet:
 	tar cfz puppet.tgz puppet
 
-bootstrap: package_puppet
+bootstrap: package_puppet, requirements
+	vagrant up
+	git submodule init
+	git submodule update
 	bin/fab bootstrap
 
 create_plug: dist

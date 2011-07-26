@@ -11,4 +11,4 @@ Installing Development Environment
 
     cd pms
 
-    make requirements && vagrant up && make bootstrap && make deploy
+    make bootstrap && make deploy
