@@ -13,7 +13,7 @@ def bootstrap():
         sudo('tar xfz /tmp/puppet.tgz')
     sudo('puppet apply /etc/puppet/manifests/server.pp')
     sudo('easy_install -U distribute')
-    sudo('pip install plug')
+    sudo('pip install plug==0.1.3')
     sudo('pip install virtualenv')
 
 def deploy():
@@ -22,6 +22,6 @@ def deploy():
     put('vagrant.conf', '/tmp/pms.conf')
     sudo('mv /tmp/pms.conf /etc/pms')
     sudo('chown -R pms /etc/pms')
-    sudo('plug install --plug=/tmp/pms-0.1.1.pms.plug')
-    sudo('plug setup --plug=pms-0.1.1.pms.plug')
+    sudo('plug install /tmp/pms-0.1.2.pms.plug')
+    sudo('plug setup pms-0.1.2.pms.plug')
     sudo('/etc/init.d/nginx restart')

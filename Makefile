@@ -35,5 +35,5 @@ bootstrap: package_puppet
 	bin/fab bootstrap
 
 create_plug: dist
-	bin/plug create --package=dist/pms-0.1.1.tar.gz
+	bin/plug create dist/pms-0.1.2.tar.gz
 
