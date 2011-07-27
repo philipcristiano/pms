@@ -29,6 +29,8 @@ deploy: dist
 	bin/fab deploy
 
 package_puppet:
+	git submodule init
+	git submodule update
 	tar cfz puppet.tgz puppet
 
 .PHONY: puppet
@@ -37,7 +39,4 @@ puppet: package_puppet
 
 bootstrap: package_puppet requirements
 	vagrant up
-	git submodule init
-	git submodule update
-	-bin/fab bootstrap
 	bin/fab bootstrap
