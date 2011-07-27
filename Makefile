@@ -25,7 +25,7 @@ requirements: virtualenv
 server:
 	$(PYTHON) pms/app.py
 
-deploy:
+deploy: dist
 	bin/fab deploy
 
 package_puppet:
