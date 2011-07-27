@@ -1,3 +1,4 @@
+include nginx
 class lucid64 {
   exec { "Update APT":
     command => "/usr/bin/apt-get -q -q update",
@@ -71,4 +72,3 @@ exec \$GUNICORN \$APP
 
 include lucid64
 include mongodb
-include nginx
