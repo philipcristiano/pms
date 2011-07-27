@@ -39,4 +39,5 @@ bootstrap: package_puppet requirements
 	vagrant up
 	git submodule init
 	git submodule update
+	-bin/fab bootstrap
 	bin/fab bootstrap
