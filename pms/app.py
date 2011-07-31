@@ -1,20 +1,25 @@
+import datetime
 import json
 
 from flask import Flask, request, jsonify, Response
 from pymongo.objectid import ObjectId
 
 from pms.connection import get_connection
+from pms.config import config
 
 app = Flask(__name__)
 
 connection = get_connection()
 db = connection.pms
 events = db.events
+rollups = db.rollups
 
 @app.route('/record', methods=['POST'])
 def record():
     data = json.loads(request.data)
-    print events.insert(data, safe=True)
+    _id = events.insert(data, safe=True)
+    data['_id'] = _id
+    generate_rollups(data)
     return jsonify({'status':200})
 
 @app.route('/list', methods=['GET'])
@@ -51,6 +56,43 @@ def flatten(data):
     for key in data:
         new_data[key] = data[key]
     return new_data
+
+def generate_rollups(event):
+    """Try to create a rollup for the event"""
+    t = event['_id'].generation_time
+    for name, rollup_config in config['aggregation'].items():
+        if type(rollup_config['properties']) != list:
+            properties = [rollup_config['properties']]
+        else:
+            properties = rollup_config['properties']
+
+        generate_rollup(event, properties)
+
+def generate_rollup(event, properties):
+    """Generate a single rollup for this event matching the properties"""
+    event_time = event['_id'].generation_time
+    doc = {
+        'date':{
+            'year': event_time.year,
+            'month': event_time.month,
+            'day': event_time.day,
+        },
+        'properties': {}
+    }
+    for prop in properties:
+        if not prop in event:
+            print 'missing', prop
+            return
+        doc['properties'][prop] = event[prop]
+
+    update = {
+        '$inc' : {
+            'data.total' : 1,
+            'data.hour.{0.hour}'.format(event_time): 1,
+            'data.minute.{0.hour}:{0.minute}'.format(event_time): 1,
+        }
+    }
+    rollups.update(doc, update, upsert=True)
 
 
 if __name__ == "__main__":
