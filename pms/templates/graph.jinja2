@@ -7,20 +7,6 @@
 	<script type="text/javascript" src="/static/shared/jquery.min.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.flot.js"></script>
 	<script type="text/javascript" src="/static/shared/EnhanceJS/enhance.js"></script>
-	<script type="text/javascript">
-		// Run capabilities test
-		enhance({
-			loadScripts: [
-				{src: '/static/js/excanvas.js', iecondition: 'all'},
-				'/static/js/visualize.jQuery.js',
-				'/static/js/example.js',
-			],
-			loadStyles: [
-				'/static/css/visualize.css',
-				'/static/css/visualize-dark.css'
-			]
-		});
-    </script>
 </head>
 <body>
 
@@ -37,26 +23,6 @@ $(function () {
     $.plot($("#placeholder"), [ d1 ]);
 });
 </script>
-
-<table style="display:none">
-	<caption>Rollup Data</caption>
-	<thead>
-       		<tr>
-			<td></td>
-            {% for i in range(24) %}
-			<th scope="col">{{ i }}</th>
-            {% endfor %}
-		</tr>
-	</thead>
-	<tbody>
-		<tr>
-            <th scope="row">Hourly</th>
-            {% for i in data.hourly %}
-            <td>{{ i }}</td>
-            {% endfor %}
-		</tr>
-	</tbody>
-</table>
 
 </body>
 </html>
