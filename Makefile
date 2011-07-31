@@ -1,11 +1,17 @@
 NOSETESTS = bin/nosetests -m '([Dd]escribe|[Ww]hen|[Ss]hould|[Tt]est)' -e DingusTestCase
 PYTHON = PYTHONPATH=. bin/python
 
-test:
-	$(NOSETESTS) tests/*.py
+unit-test:
+	$(NOSETESTS) tests/unit
+
+test: unit-test
 
 clean:
 	-rm -rf dist
+
+coverage:
+	$(NOSETESTS) tests/unit --with-coverage --cover-tests --cover-package=pms
+	rm .coverage
 
 develop:
 	bin/python setup.py develop
