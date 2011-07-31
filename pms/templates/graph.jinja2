@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+	<title>Rollup</title>
+	<link href="/static/css/basic.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="/static/shared/EnhanceJS/enhance.js"></script>
+	<script type="text/javascript">
+		// Run capabilities test
+		enhance({
+			loadScripts: [
+				{src: '/static/js/excanvas.js', iecondition: 'all'},
+				'/static/shared/jquery.min.js',
+				'/static/js/visualize.jQuery.js',
+				'/static/js/example.js'
+			],
+			loadStyles: [
+				'/static/css/visualize.css',
+				'/static/css/visualize-dark.css'
+			]
+		});
+    </script>
+</head>
+<body>
+
+<table style="display:none">
+	<caption>Rollup Data</caption>
+	<thead>
+       		<tr>
+			<td></td>
+            {% for i in range(24) %}
+			<th scope="col">{{ i }}</th>
+            {% endfor %}
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+            <th scope="row">Hourly</th>
+            {% for i in data.hourly %}
+            <td>{{ i }}</td>
+            {% endfor %}
+		</tr>
+	</tbody>
+</table>
+
+</body>
+</html>

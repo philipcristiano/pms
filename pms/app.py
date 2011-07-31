@@ -1,7 +1,7 @@
 import datetime
 import json
 
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, render_template
 from pymongo.objectid import ObjectId
 
 from pms.connection import get_connection
@@ -40,6 +40,21 @@ def next(oid):
         return jsonify(event)
     return jsonify({})
 
+@app.route('/display/<year>/<month>/<day>/<rollup_name>')
+def display(year, month, day, rollup_name):
+    rollup = rollups.find_one({
+        'date': {
+            'year': int(year),
+            'month': int(month),
+            'day': int(day),
+        },
+        'name': rollup_name,
+    })
+    if rollup is None:
+        return 'Sorry I can\'t find that one'
+    data = rollup_data_to_array(rollup)
+    return render_template('graph.jinja2', data=data)
+
 def get_events(query=None):
     l = []
     for event in events.find(query).sort('_id', -1):
@@ -66,9 +81,9 @@ def generate_rollups(event):
         else:
             properties = rollup_config['properties']
 
-        generate_rollup(event, properties)
+        generate_rollup(event, name, properties)
 
-def generate_rollup(event, properties):
+def generate_rollup(event, name, properties):
     """Generate a single rollup for this event matching the properties"""
     event_time = event['_id'].generation_time
     doc = {
@@ -77,7 +92,8 @@ def generate_rollup(event, properties):
             'month': event_time.month,
             'day': event_time.day,
         },
-        'properties': {}
+        'name': name,
+        'properties': {},
     }
     for prop in properties:
         if not prop in event:
@@ -92,8 +108,23 @@ def generate_rollup(event, properties):
             'data.minute.{0.hour}:{0.minute}'.format(event_time): 1,
         }
     }
-    rollups.update(doc, update, upsert=True)
+    rollups.update(doc, update, upsert=True, range=range)
 
+def rollup_data_to_array(rollup):
+    hourly = []
+    minutely = []
+    data = {
+        'hourly': hourly,
+        'minutely': minutely,
+    }
+    for h in range(24):
+        h = str(h)
+        hourly.append(rollup['data']['hour'].get(h, 0))
+        for m in range(60):
+            m = '{0}:{1}'.format(h,m)
+            minutely.append(rollup['data']['minute'].get(m, 0))
+
+    return data
 
 if __name__ == "__main__":
     app.debug = True
