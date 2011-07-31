@@ -1,5 +1,6 @@
 import datetime
 import json
+import time
 
 from flask import Flask, request, jsonify, Response, render_template
 from pymongo.objectid import ObjectId
@@ -131,6 +132,10 @@ def rollup_data_to_array(rollup):
             minutely.append(rollup['data']['minute'].get(m, 0))
 
     return data
+
+def to_epoch(dt):
+    """Convert a datetime to second since epoch int"""
+    return time.mktime(dt.timetuple())
 
 if __name__ == "__main__":
     app.debug = True
