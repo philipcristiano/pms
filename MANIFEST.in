@@ -1,2 +1,4 @@
 include *.py
 include README.rst
+recursive-include pms/static *
+recursive-include pms/templates *

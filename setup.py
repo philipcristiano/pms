@@ -24,13 +24,12 @@ setup(
     install_requires=[
         'configobj==4.6.0',
         'flask',
-        'gevent',
-        'gunicorn',
         'pymongo',
     ],
     test_suite='tests',
     long_description=read('README.rst'),
-    zip_safe=True,
+    include_package_data=True,
+    zip_safe=False,
     entry_points="""
     [console_scripts]
     """
