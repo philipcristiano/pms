@@ -40,20 +40,26 @@ def next(oid):
         return jsonify(event)
     return jsonify({})
 
-@app.route('/display/<year>/<month>/<day>/<rollup_name>')
-def display(year, month, day, rollup_name):
-    rollup = rollups.find_one({
+@app.route('/display/<year>/<month>/<day>/<name>')
+def display(year, month, day, name):
+    query = {
         'date': {
             'year': int(year),
             'month': int(month),
             'day': int(day),
         },
-        'name': rollup_name,
-    })
-    if rollup is None:
-        return 'Sorry I can\'t find that one'
-    data = rollup_data_to_array(rollup)
+        'name': name,
+    }
+    cursor = rollups.find(query)
+
+    data = []
+    for rollup in cursor:
+        data.append({
+            'properties': rollup['properties'],
+            'data': rollup_data_to_array(rollup)
+        })
     return render_template('graph.jinja2', data=data)
+
 
 def get_events(query=None):
     l = []

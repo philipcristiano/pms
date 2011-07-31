@@ -6,7 +6,6 @@
 	<link href="/static/css/basic.css" type="text/css" rel="stylesheet" />
 	<script type="text/javascript" src="/static/shared/jquery.min.js"></script>
 	<script type="text/javascript" src="/static/js/jquery.flot.js"></script>
-	<script type="text/javascript" src="/static/shared/EnhanceJS/enhance.js"></script>
 </head>
 <body>
 
@@ -14,13 +13,18 @@
 
 <script type="text/javascript">
 $(function () {
-    var d1 = [
-        {% for i in range(24) %}
-            [ {{i}}, {{ data.hourly[i]}}],
+    $.plot($("#placeholder"), [
+        {% for rollup in data %}
+            {
+                label: "{{ rollup.properties }}",
+                data: [
+                    {% for i in range(24) %}
+                        [ {{i}}, {{ rollup.data.hourly[i]}}],
+                    {% endfor %}
+                ]
+            },
         {% endfor %}
-    ];
-
-    $.plot($("#placeholder"), [ d1 ]);
+    ]);
 });
 </script>
 
