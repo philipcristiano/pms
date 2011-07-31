@@ -124,12 +124,26 @@ def rollup_data_to_array(rollup):
         'hourly': hourly,
         'minutely': minutely,
     }
+    date = datetime.date(
+        rollup['date']['year'],
+        rollup['date']['month'],
+        rollup['date']['day'],
+    )
     for h in range(24):
-        h = str(h)
-        hourly.append(rollup['data']['hour'].get(h, 0))
+        t = datetime.time(h)
+        h_str = str(h)
+        dt = datetime.datetime.combine(date, t)
+        hour_value = int(rollup['data']['hour'].get(h_str, 0))
+
+        hourly.append([to_epoch(dt)*1000, hour_value])
+
         for m in range(60):
+            t = datetime.time(h, m)
             m = '{0}:{1}'.format(h,m)
-            minutely.append(rollup['data']['minute'].get(m, 0))
+            dt = datetime.datetime.combine(date, t)
+            minute_value = int(rollup['data']['minute'].get(m, 0))
+
+            minutely.append([to_epoch(dt)*1000, minute_value])
 
     return data
 

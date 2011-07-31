@@ -18,13 +18,19 @@ $(function () {
             {
                 label: "{{ rollup.properties }}",
                 data: [
-                    {% for i in range(24) %}
-                        [ {{i}}, {{ rollup.data.hourly[i]}}],
+                    {% for datum in rollup.data.minutely %}
+                        {{ datum }},
                     {% endfor %}
                 ]
             },
         {% endfor %}
-    ]);
+    ],
+    {
+        xaxis: {
+            mode: "time",
+        }
+    }
+    );
 });
 </script>
 
