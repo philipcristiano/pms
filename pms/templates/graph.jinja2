@@ -4,15 +4,16 @@
 	<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 	<title>Rollup</title>
 	<link href="/static/css/basic.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="/static/shared/jquery.min.js"></script>
+	<script type="text/javascript" src="/static/js/jquery.flot.js"></script>
 	<script type="text/javascript" src="/static/shared/EnhanceJS/enhance.js"></script>
 	<script type="text/javascript">
 		// Run capabilities test
 		enhance({
 			loadScripts: [
 				{src: '/static/js/excanvas.js', iecondition: 'all'},
-				'/static/shared/jquery.min.js',
 				'/static/js/visualize.jQuery.js',
-				'/static/js/example.js'
+				'/static/js/example.js',
 			],
 			loadStyles: [
 				'/static/css/visualize.css',
@@ -22,6 +23,20 @@
     </script>
 </head>
 <body>
+
+    <div id="placeholder" style="width:600px;height:300px;"></div>
+
+<script type="text/javascript">
+$(function () {
+    var d1 = [
+        {% for i in range(24) %}
+            [ {{i}}, {{ data.hourly[i]}}],
+        {% endfor %}
+    ];
+
+    $.plot($("#placeholder"), [ d1 ]);
+});
+</script>
 
 <table style="display:none">
 	<caption>Rollup Data</caption>

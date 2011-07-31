@@ -108,7 +108,7 @@ def generate_rollup(event, name, properties):
             'data.minute.{0.hour}:{0.minute}'.format(event_time): 1,
         }
     }
-    rollups.update(doc, update, upsert=True, range=range)
+    rollups.update(doc, update, upsert=True)
 
 def rollup_data_to_array(rollup):
     hourly = []
