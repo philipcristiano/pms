@@ -66,6 +66,23 @@ def json_rollups(year, month, day, name):
         })
     return jsonify(response=data)
 
+@app.route('/rollup/latest/<name>/<ly>/<hours>')
+def last_data(name, ly, hours):
+    now = datetime.datetime.utcnow()
+    data = {}
+    query = {'name': name}
+
+    cursor = rollups.find(query).sort('_id', -1)
+
+    for rollup in cursor:
+        label = str(rollup['properties'])
+        array = data.get(label, [])
+        array.extend(rollup_data_to_array(rollup)['hourly'])
+        data[label] = array
+
+    flot_data = [{'label': k, 'data': sorted(data[k])} for k in data]
+
+    return jsonify(response=flot_data)
 
 def get_events(query=None):
     l = []
@@ -129,23 +146,25 @@ def rollup_data_to_array(rollup):
         'hourly': hourly,
         'minutely': minutely,
     }
-    date = datetime.date(
+    date = datetime.datetime(
         rollup['date']['year'],
         rollup['date']['month'],
         rollup['date']['day'],
-    )
+    ) - datetime.timedelta(hours=8)
+
     for h in range(24):
-        t = datetime.time(h)
+        t = datetime.timedelta(hours=h)
         h_str = str(h)
-        dt = datetime.datetime.combine(date, t)
+        dt = date + t
         hour_value = int(rollup['data']['hour'].get(h_str, 0))
 
         hourly.append([to_epoch(dt)*1000, hour_value])
 
         for m in range(60):
-            t = datetime.time(h, m)
+            t = datetime.timedelta(hours=h, minutes=m)
             m = '{0}:{1}'.format(h,m)
-            dt = datetime.datetime.combine(date, t)
+            dt = date + t
+            print dt
             minute_value = int(rollup['data']['minute'].get(m, 0))
 
             minutely.append([to_epoch(dt)*1000, minute_value])
@@ -154,6 +173,7 @@ def rollup_data_to_array(rollup):
 
 def to_epoch(dt):
     """Convert a datetime to second since epoch int"""
+
     return time.mktime(dt.timetuple())
 
 if __name__ == "__main__":

@@ -5,7 +5,7 @@ requester = JsonRequester('http://localhost:5000')
 doc = {
     'a': 'a',
     'b': 'b',
-    'level': 'blah',
+    'level': 'critical',
 }
 
 print requester.post('/record', doc)

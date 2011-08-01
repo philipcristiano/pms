@@ -25,7 +25,7 @@ $(function () {
     var plot = $.plot(placeholder, [d1], options2);
     var t;
     function update() {
-        $.getJSON('/rollups/2011/8/1/host-level', {}, function(data){
+        $.getJSON('/rollup/latest/host-level/hourly/1', {}, function(data){
             plot.setData(data['response']);
             plot.setupGrid();
             plot.draw();
