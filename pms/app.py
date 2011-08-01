@@ -41,8 +41,12 @@ def next(oid):
         return jsonify(event)
     return jsonify({})
 
-@app.route('/display/<year>/<month>/<day>/<name>')
-def display(year, month, day, name):
+@app.route('/')
+def index():
+    return render_template('graph.jinja2')
+
+@app.route('/rollups/<year>/<month>/<day>/<name>')
+def json_rollups(year, month, day, name):
     query = {
         'date': {
             'year': int(year),
@@ -56,10 +60,11 @@ def display(year, month, day, name):
     data = []
     for rollup in cursor:
         data.append({
-            'properties': rollup['properties'],
-            'data': rollup_data_to_array(rollup)
+            #'properties': rollup['properties'],
+            'data': rollup_data_to_array(rollup)['hourly'],
+            'label': str(rollup['properties'])
         })
-    return render_template('graph.jinja2', data=data)
+    return jsonify(response=data)
 
 
 def get_events(query=None):
