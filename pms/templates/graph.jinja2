@@ -9,7 +9,7 @@
 </head>
 <body>
 
-    <div id="placeholder" style="width:800px;height:200px;"></div>
+    <div id="placeholder" style="width:800px;height:600px;"></div>
 
 <script type="text/javascript">
 $(function () {
@@ -17,7 +17,10 @@ $(function () {
     var options2 = {
         xaxis: {
             mode: "time",
-        }
+        },
+        legend: {
+            position: "nw",
+        },
     };
     var dummy_data = [];
     var d1 = [[0, 3], [4, 8], [8, 5], [9, 13]];
