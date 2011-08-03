@@ -5,6 +5,7 @@ import time
 from flask import Flask, request, jsonify, Response, render_template
 from pymongo.objectid import ObjectId
 
+import aggregates
 from pms.connection import get_connection
 from pms.config import config
 
@@ -68,19 +69,34 @@ def json_rollups(year, month, day, name):
 
 @app.route('/rollup/latest/<name>/<ly>/<hours>')
 def last_data(name, ly, hours):
-    now = datetime.datetime.utcnow()
     data = {}
     query = {'name': name}
 
     cursor = rollups.find(query).sort('_id', -1)
-
     for rollup in cursor:
         label = str(rollup['properties'])
         array = data.get(label, [])
-        array.extend(rollup_data_to_array(rollup)['hourly'])
+        array.extend(aggregates.get_hourly_data_from_aggregate(rollup))
         data[label] = array
 
-    flot_data = [{'label': k, 'data': sorted(data[k])} for k in data]
+    now = datetime.datetime.utcnow()
+    start = now - datetime.timedelta(days=3)
+    timetuple = start.timetuple()[:4]
+    start = datetime.datetime(*timetuple)
+    interval = datetime.timedelta(hours=1)
+    empty_set = aggregates.generate_empty_data_set(start, now, interval)
+
+    flot_data = []
+    for label, label_data in data.items():
+        data_list = aggregates.merge_data_into_empty_data_set(
+            label_data,
+            empty_set
+        )
+        js_data_list = map_data_set_to_javascript_times(data_list)
+        flot_data.append({
+            'label': label,
+            'data': js_data_list
+        })
 
     return jsonify(response=flot_data)
 
@@ -164,7 +180,6 @@ def rollup_data_to_array(rollup):
             t = datetime.timedelta(hours=h, minutes=m)
             m = '{0}:{1}'.format(h,m)
             dt = date + t
-            print dt
             minute_value = int(rollup['data']['minute'].get(m, 0))
 
             minutely.append([to_epoch(dt)*1000, minute_value])
