@@ -171,6 +171,20 @@ def rollup_data_to_array(rollup):
 
     return data
 
+def map_data_set_to_javascript_times(data):
+    """Takes a list of tuples and coverts the first element to a js timestamp returning a new list.
+
+    Input:
+        [(datetime1, datum1), (datetime2, datum2)]
+
+    """
+
+    new_data = []
+    for (timestamp, datum) in data:
+        js_timestamp = to_epoch(timestamp) * 1000
+        new_data.append((js_timestamp, datum))
+    return new_data
+
 def to_epoch(dt):
     """Convert a datetime to second since epoch int"""
 
