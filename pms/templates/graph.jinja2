@@ -18,6 +18,10 @@ $(function () {
         xaxis: {mode: "time"},
         legend: {position: "nw"},
         grid: {hoverable: true, clickable: true},
+        series: {
+            lines: { show: true },
+            points: { show: true }
+        },
     };
     function showTooltip(x, y, contents) {
         $('<div id="tooltip">' + contents + '</div>').css( {
