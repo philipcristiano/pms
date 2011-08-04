@@ -11,6 +11,7 @@ class WhenGettingHourlyDataFromAggregate(DingusTestCase(get_hourly_data_from_agg
     def setup(self):
         super(WhenGettingHourlyDataFromAggregate, self).setup()
         self.aggregate = Dingus('aggregate')
+        mod.int = Dingus('int', return_value=4)
 
         self.returned = get_hourly_data_from_aggregate(self.aggregate)
 
@@ -24,7 +25,7 @@ class WhenGettingHourlyDataFromAggregate(DingusTestCase(get_hourly_data_from_agg
 
     def should_create_timedelta_for_hour(self):
         for hour in self.aggregate['data']['hour']:
-            assert mod.datetime.calls('timedelta', hours=hour)
+            assert mod.datetime.calls('timedelta', hours=mod.int(hour))
 
 
     def should_return_list_of_tuples(self):
