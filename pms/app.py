@@ -92,7 +92,8 @@ def last_data(name, ly, hours):
             label_data,
             empty_set
         )
-        js_data_list = map_data_set_to_javascript_times(data_list)
+        local_data_list = map_dataset_to_local_time(data_list)
+        js_data_list = map_data_set_to_javascript_times(local_data_list)
         flot_data.append({
             'label': label,
             'data': js_data_list
@@ -193,11 +194,22 @@ def map_data_set_to_javascript_times(data):
         [(datetime1, datum1), (datetime2, datum2)]
 
     """
-
     new_data = []
     for (timestamp, datum) in data:
         js_timestamp = to_epoch(timestamp) * 1000
         new_data.append((js_timestamp, datum))
+    return new_data
+
+
+def map_dataset_to_local_time(data):
+    """Takes a list of tuples and returns a list of tuples with the first
+    element adjusted from GMT to the current TZ.
+
+    """
+    new_data = []
+    for (timestamp, datum) in data:
+        local_timestamp = timestamp - datetime.timedelta(hours=4)
+        new_data.append((local_timestamp, datum))
     return new_data
 
 def to_epoch(dt):
