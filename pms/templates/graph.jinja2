@@ -50,7 +50,7 @@ $(function () {
                     y = item.datapoint[1].toFixed(2);
 
                 showTooltip(item.pageX, item.pageY,
-                            new Date(Math.floor(x)) + " = " + y);
+                            new Date(Math.floor(x)) + " = " + Math.floor(y));
             }
         }
         else {
