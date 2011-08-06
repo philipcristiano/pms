@@ -98,11 +98,13 @@ def last_data(name, ly, hours):
     query = {'name': name}
 
     cursor = rollups.find(query).sort('_id', -1)
+    label_map = {}
     for rollup in cursor:
         label = str(rollup['properties'])
         array = data.get(label, [])
         array.extend(aggregates.get_hourly_data_from_aggregate(rollup))
         data[label] = array
+        label_map[label] = rollup['properties']
 
     now = datetime.datetime.utcnow()
     start = now - datetime.timedelta(days=3)
@@ -122,7 +124,7 @@ def last_data(name, ly, hours):
         flot_data.append({
             'label': label,
             'data': js_data_list,
-            'pms_properties': rollup['properties'],
+            'pms_properties': label_map[label],
         })
 
     return jsonify(response=flot_data)
