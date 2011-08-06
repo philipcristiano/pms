@@ -48,6 +48,7 @@ $(function start_graph() {
         if (item) {
             var d = Date(item.datapoint[0]);
             var query = item.series.pms_properties;
+
             query['pms_js_time'] = item.datapoint[0];
             $.getJSON('/query', query, function (data) {
                 var events = data['events'];

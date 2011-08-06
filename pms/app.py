@@ -44,7 +44,6 @@ def next(oid):
 
 @app.route('/query')
 def query():
-    print 'data'
     start = int(request.args.get('pms_js_time')) /1000
     start = datetime.datetime.utcfromtimestamp(start)
     #start -= datetime.timedelta(hours=4)
@@ -52,14 +51,8 @@ def query():
 
     start_id = ObjectId.from_datetime(start)
     end_id = ObjectId.from_datetime(end)
-    print start
-    print end
-    print start_id.generation_time
-    print end_id.generation_time
     args = flatten(request.args)
-    print args
     del args['pms_js_time']
-    print 'properties', args
     query = {
         '_id': {
             '$gte': ObjectId.from_datetime(start),
@@ -68,10 +61,8 @@ def query():
     }
     query.update(args)
     l = []
-    print query
     for event in events.find(query).sort('_id'):
         wrap_event(event)
-        print event
         l.append(event)
     return jsonify(events=l)
 

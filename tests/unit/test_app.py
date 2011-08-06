@@ -31,8 +31,6 @@ class WhenMappingDataSetToLocalTime(DingusTestCase(map_dataset_to_local_time)):
         self.returned = map_dataset_to_local_time(self.data)
 
     def should_adust_time(self):
-        print [(self.time - mod.datetime.timedelta(), self.datum)]
-        print self.returned
         assert self.returned == [
             (self.time - mod.datetime.timedelta(), self.datum)
         ]
