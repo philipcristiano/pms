@@ -1,15 +1,16 @@
 var last_id = '000000000000000000000000';
-$(function (){
 
-    function event_to_str(event) {
-        var string = '<div class="event accordian ' + event['_id'] + '"><p>';
-        string += '<h3>' + event['time'] + '</h3>';
-        for (key in event) {
-            string += key + ': ' + event[key] + '<br>';
-        }
-        string += '<p></div>';
-        return string
+function event_to_str(event) {
+    var string = '<div class="event ' + event['_id'] + '"><p>';
+    string += '<h3>' + event['time'] + '</h3>';
+    for (key in event) {
+        string += key + ': ' + event[key] + '<br>';
     }
+    string += '<p></div>';
+    return string
+}
+
+$(function (){
 
     function insert_list() {
         $.getJSON('/list', {}, function(data) {
@@ -36,6 +37,6 @@ $(function (){
         });
 
     }
-    get_next_event();
+    // get_next_event();
 
 });

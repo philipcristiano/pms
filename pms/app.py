@@ -42,6 +42,39 @@ def next(oid):
         return jsonify(event)
     return jsonify({})
 
+@app.route('/query')
+def query():
+    print 'data'
+    start = int(request.args.get('pms_js_time')) /1000
+    start = datetime.datetime.utcfromtimestamp(start)
+    #start -= datetime.timedelta(hours=4)
+    end = start + datetime.timedelta(hours=1)
+
+    start_id = ObjectId.from_datetime(start)
+    end_id = ObjectId.from_datetime(end)
+    print start
+    print end
+    print start_id.generation_time
+    print end_id.generation_time
+    args = flatten(request.args)
+    print args
+    del args['pms_js_time']
+    print 'properties', args
+    query = {
+        '_id': {
+            '$gte': ObjectId.from_datetime(start),
+            '$lte': ObjectId.from_datetime(end),
+        }
+    }
+    query.update(args)
+    l = []
+    print query
+    for event in events.find(query).sort('_id'):
+        wrap_event(event)
+        print event
+        l.append(event)
+    return jsonify(events=l)
+
 @app.route('/')
 def index():
     return render_template('graph.jinja2')
@@ -63,7 +96,8 @@ def json_rollups(year, month, day, name):
         data.append({
             #'properties': rollup['properties'],
             'data': rollup_data_to_array(rollup)['hourly'],
-            'label': str(rollup['properties'])
+            'label': str(rollup['properties']),
+            'pms_properties': rollup['properties'],
         })
     return jsonify(response=data)
 
@@ -96,7 +130,8 @@ def last_data(name, ly, hours):
         js_data_list = map_data_set_to_javascript_times(local_data_list)
         flot_data.append({
             'label': label,
-            'data': js_data_list
+            'data': js_data_list,
+            'pms_properties': rollup['properties'],
         })
 
     return jsonify(response=flot_data)

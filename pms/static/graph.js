@@ -44,6 +44,23 @@ $(function start_graph() {
             previousPoint = null;
         }
     });
+    $("#graph").bind("plotclick", function (event, pos, item) {
+        if (item) {
+            var d = Date(item.datapoint[0]);
+            var query = item.series.pms_properties;
+            query['pms_js_time'] = item.datapoint[0];
+            $.getJSON('/query', query, function (data) {
+                var events = data['events'];
+                last_id = events[0]['_id'];
+                $('#events').empty();
+                for(var i=0; i < events.length; i++){
+                    var event = events[i];
+                    $('#events').append(event_to_str(event));
+                }
+
+            });
+        }
+    });
 
     var dummy_data = [];
     var d1 = [[0, 3], [4, 8], [8, 5], [9, 13]];
