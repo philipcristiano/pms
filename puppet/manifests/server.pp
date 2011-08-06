@@ -37,6 +37,7 @@ class lucid64 {
     ensure => directory,
     mode => 644,
     owner => "root",
+    require => Package["runit"],
   }
 
   file { "/etc/sv/pms/run":
