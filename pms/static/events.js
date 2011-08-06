@@ -1,9 +1,9 @@
+var last_id = '000000000000000000000000';
 $(function (){
 
-    var last_id = '000000000000000000000000';
     function event_to_str(event) {
-        var string = '<div class="event ' + event['_id'] + '"><p>';
-        string += event['time'];
+        var string = '<div class="event accordian ' + event['_id'] + '"><p>';
+        string += '<h3>' + event['time'] + '</h3>';
         for (key in event) {
             string += key + ': ' + event[key] + '<br>';
         }
