@@ -81,6 +81,7 @@ $(function start_graph() {
             plot.setupGrid();
             plot.draw();
             t = setTimeout(update, 2000);
+            $('#last_updated').text(new Date().toString());
         });
     }
     t = setTimeout(update, 1000);
