@@ -1,4 +1,10 @@
 $(function start_graph() {
+    var rollup_type = 'host-level';
+
+    $("#rollup_select").change(function (argument) {
+        rollup_type = $("#rollup_select option:selected").text();
+    });
+
     var options = {};
     var options2 = {
         xaxis: {mode: "time"},
@@ -69,7 +75,8 @@ $(function start_graph() {
     var plot = $.plot(graph, [d1], options2);
     var t;
     function update() {
-        $.getJSON('/rollup/latest/host-level/hourly/1', {}, function(data){
+        url = '/rollup/latest/' + rollup_type + '/hourly/1';
+        $.getJSON(url, {}, function(data){
             plot.setData(data['response']);
             plot.setupGrid();
             plot.draw();

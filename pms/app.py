@@ -68,7 +68,7 @@ def query():
 
 @app.route('/')
 def index():
-    return render_template('graph.jinja2')
+    return render_template('graph.jinja2', config=config)
 
 @app.route('/rollups/<year>/<month>/<day>/<name>')
 def json_rollups(year, month, day, name):

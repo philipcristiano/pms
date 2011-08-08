@@ -12,6 +12,15 @@
 </head>
 <body>
 
+    <form>
+        Rollup Type:
+        <select id="rollup_select" name="cars">
+            {% for type in config.aggregation %}
+                <option value="{{type}}">{{type}}</option>
+            {% endfor %}
+        </select>
+    </form>
+
     <div id="graph" style="width:800px;height:300px;"></div>
 
     <div id="events"></div>
