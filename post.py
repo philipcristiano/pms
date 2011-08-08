@@ -1,11 +1,22 @@
 from jsonrequester import JsonRequester
+import random
 
 requester = JsonRequester('http://localhost:5000')
 
-doc = {
-    'a': 'a',
-    'b': 'b',
-    'level': 'critical',
-}
+for i in range(4):
+    rand = random.random()
+    if rand < .2:
+        level = 'critical'
+    elif rand < .5:
+        level = 'error'
+    else:
+        level = 'warning'
 
-print requester.post('/record', doc)
+    doc = {
+        'a': 'a',
+        'b': 'b',
+        'level': level,
+        'host': str(i),
+    }
+    print requester.post('/record', doc)
+
