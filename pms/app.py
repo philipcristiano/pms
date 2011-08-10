@@ -45,9 +45,11 @@ def next(oid):
 @app.route('/query')
 def query():
     start = int(request.args.get('pms_js_time')) /1000
+    print start
     start = datetime.datetime.utcfromtimestamp(start)
     #start -= datetime.timedelta(hours=4)
     end = start + datetime.timedelta(hours=1)
+    print start
 
     start_id = ObjectId.from_datetime(start)
     end_id = ObjectId.from_datetime(end)
@@ -134,11 +136,7 @@ def generate_rollups(event):
     """Try to create a rollup for the event"""
     t = event['_id'].generation_time
     for name, rollup_config in config['aggregation'].items():
-        if type(rollup_config['properties']) != list:
-            properties = [rollup_config['properties']]
-        else:
-            properties = rollup_config['properties']
-
+        properties = rollup_config['properties']
         generate_rollup(event, name, properties)
 
 def generate_rollup(event, name, properties):
