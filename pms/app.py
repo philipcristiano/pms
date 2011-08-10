@@ -73,7 +73,18 @@ def index():
 @app.route('/rollup/latest/<name>/<ly>/<hours>')
 def last_data(name, ly, hours):
     data = {}
-    query = {'name': name}
+    now = datetime.datetime.utcnow()
+    start = now - datetime.timedelta(hours=int(hours))
+    timetuple = start.timetuple()[:4]
+    start = datetime.datetime(*timetuple)
+    interval = datetime.timedelta(hours=1)
+
+    query = {
+        'name': name,
+        'date.year': {'$gte': start.year},
+        'date.month': {'$gte': start.month},
+        'date.day': {'$gte': start.day},
+    }
 
     cursor = rollups.find(query).sort('_id', -1)
     label_map = {}
@@ -84,11 +95,6 @@ def last_data(name, ly, hours):
         data[label] = array
         label_map[label] = rollup['properties']
 
-    now = datetime.datetime.utcnow()
-    start = now - datetime.timedelta(days=3)
-    timetuple = start.timetuple()[:4]
-    start = datetime.datetime(*timetuple)
-    interval = datetime.timedelta(hours=1)
     empty_set = aggregates.generate_empty_data_set(start, now, interval)
 
     flot_data = []

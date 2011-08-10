@@ -14,9 +14,15 @@
 
     <form>
         Rollup Type:
-        <select id="rollup_select" name="cars">
+        <select id="rollup_select" name="rollup_types">
             {% for type in config.aggregation %}
                 <option value="{{type}}">{{type}}</option>
+            {% endfor %}
+        </select>
+        Number of Days:
+        <select id="days_select" name="number_of_days">
+            {% for day in range(1, 10) %}
+                <option value="{{day}}">{{day}}</option>
             {% endfor %}
         </select>
     </form>

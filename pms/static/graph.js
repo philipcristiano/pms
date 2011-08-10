@@ -1,8 +1,14 @@
 $(function start_graph() {
     var rollup_type = 'host-level';
+    var number_of_days = '1';
 
     $("#rollup_select").change(function (argument) {
         rollup_type = $("#rollup_select option:selected").text();
+        update();
+    });
+    $("#days_select").change(function( argument) {
+        number_of_days = $("#days_select option:selected").text();
+        update();
     });
 
     var options = {};
@@ -75,14 +81,19 @@ $(function start_graph() {
     var plot = $.plot(graph, [d1], options2);
     var t;
     function update() {
-        url = '/rollup/latest/' + rollup_type + '/hourly/1';
+        var hours = parseInt(number_of_days) * 24;
+        url = '/rollup/latest/' + rollup_type + '/hourly/' + hours;
         $.getJSON(url, {}, function(data){
             plot.setData(data['response']);
             plot.setupGrid();
             plot.draw();
-            t = setTimeout(update, 2000);
             $('#last_updated').text(new Date().toString());
         });
     }
-    t = setTimeout(update, 1000);
+    function repeated_update(){
+        update();
+        setTimeout(repeated_update, 2000);
+    }
+
+    t = setTimeout(repeated_update, 1000);
     });
