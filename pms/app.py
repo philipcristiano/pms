@@ -70,28 +70,6 @@ def query():
 def index():
     return render_template('graph.jinja2', config=config)
 
-@app.route('/rollups/<year>/<month>/<day>/<name>')
-def json_rollups(year, month, day, name):
-    query = {
-        'date': {
-            'year': int(year),
-            'month': int(month),
-            'day': int(day),
-        },
-        'name': name,
-    }
-    cursor = rollups.find(query)
-
-    data = []
-    for rollup in cursor:
-        data.append({
-            #'properties': rollup['properties'],
-            'data': rollup_data_to_array(rollup)['hourly'],
-            'label': str(rollup['properties']),
-            'pms_properties': rollup['properties'],
-        })
-    return jsonify(response=data)
-
 @app.route('/rollup/latest/<name>/<ly>/<hours>')
 def last_data(name, ly, hours):
     data = {}
