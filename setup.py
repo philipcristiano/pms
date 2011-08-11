@@ -13,7 +13,7 @@ def read(fname):
 
 setup(
     name='pms',
-    version='0.1.3',
+    version='0.1.4',
     description='An application monitoring service',
     keywords = 'monitoring',
     url='https://github.com/philipcristiano/pms',
