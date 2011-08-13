@@ -45,11 +45,9 @@ def next(oid):
 @app.route('/query')
 def query():
     start = int(request.args.get('pms_js_time')) /1000
-    print start
     start = datetime.datetime.utcfromtimestamp(start)
     #start -= datetime.timedelta(hours=4)
     end = start + datetime.timedelta(hours=1)
-    print start
 
     start_id = ObjectId.from_datetime(start)
     end_id = ObjectId.from_datetime(end)
