@@ -81,6 +81,8 @@ def last_data(name, ly, hours):
     start = datetime.datetime(*timetuple)
     interval = datetime.timedelta(hours=1)
 
+    minute_offset = (-(time.altzone if time.daylight else time.timezone)) / 60
+
     query = {
         'name': name,
         'date.year': {'$gte': start.year},
@@ -105,7 +107,7 @@ def last_data(name, ly, hours):
             label_data,
             empty_set
         )
-        local_data_list = map_dataset_to_local_time(data_list)
+        local_data_list = map_dataset_to_local_time(data_list, minute_offset)
         js_data_list = map_data_set_to_javascript_times(local_data_list)
         flot_data.append({
             'label': label,
@@ -211,14 +213,14 @@ def map_data_set_to_javascript_times(data):
     return new_data
 
 
-def map_dataset_to_local_time(data):
+def map_dataset_to_local_time(data, minute_offset):
     """Takes a list of tuples and returns a list of tuples with the first
     element adjusted from GMT to the current TZ.
 
     """
     new_data = []
     for (timestamp, datum) in data:
-        local_timestamp = timestamp - datetime.timedelta(hours=4)
+        local_timestamp = timestamp + datetime.timedelta(minutes=minute_offset)
         new_data.append((local_timestamp, datum))
     return new_data
 

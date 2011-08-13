@@ -28,9 +28,12 @@ class WhenMappingDataSetToLocalTime(DingusTestCase(map_dataset_to_local_time)):
         self.datum = Dingus('datum')
         self.data = [(self.time, self.datum)]
 
-        self.returned = map_dataset_to_local_time(self.data)
+        self.returned = map_dataset_to_local_time(self.data, 120)
 
     def should_adust_time(self):
         assert self.returned == [
-            (self.time - mod.datetime.timedelta(), self.datum)
+            (self.time + mod.datetime.timedelta(), self.datum)
         ]
+
+    def should_create_timedelta(self):
+        assert mod.datetime.calls('timedelta', minutes=120)
