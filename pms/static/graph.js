@@ -36,10 +36,10 @@ $(function start_graph() {
 
     var previousPoint = null;
     $("#graph").bind("plothover", function (event, pos, item) {
-        $("#x").text(pos.x.toFixed(2));
-        $("#y").text(pos.y.toFixed(2));
 
         if (item) {
+            $("#x").text(pos.x.toFixed(2));
+            $("#y").text(pos.y.toFixed(2));
             if (previousPoint != item.dataIndex) {
                 previousPoint = item.dataIndex;
 
