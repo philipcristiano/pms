@@ -3,7 +3,7 @@ import random
 
 requester = JsonRequester('http://localhost:5000')
 
-for i in range(4):
+for i in range(2):
     rand = random.random()
     if rand < .2:
         level = 'critical'
@@ -17,6 +17,12 @@ for i in range(4):
         'b': 'b',
         'level': level,
         'host': str(i),
+        'nested': {
+            'level1': {
+                'level2': 'HA!',
+            },
+            'Something' : 'blah',
+        }
     }
     print requester.post('/record', doc)
 

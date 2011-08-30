@@ -2,11 +2,9 @@ var last_id = '000000000000000000000000';
 
 function event_to_str(event) {
     var string = '<div class="event ' + event['_id'] + '"><p>';
-    string += '<h3>' + event['time'] + '</h3>';
-    for (key in event) {
-        string += key + ': ' + event[key] + '<br>';
-    }
-    string += '<p></div>';
+    string += '<h3>' + event['time'] + '</h3><pre>';
+    string += JSON.stringify(event, null, 4);
+    string += '</pre><p></div>';
     return string
 }
 
