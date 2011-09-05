@@ -1,9 +1,11 @@
 $(function start_graph() {
     var rollup_type = 'host-level';
     var number_of_days = '1';
+    var rollup_props = $("#rollup_props");
 
     $("#rollup_select").change(function (argument) {
         rollup_type = $("#rollup_select option:selected").text();
+        rollup_props.empty();
         update();
     });
     $("#days_select").change(function( argument) {
@@ -36,10 +38,10 @@ $(function start_graph() {
 
     var previousPoint = null;
     $("#graph").bind("plothover", function (event, pos, item) {
-        $("#x").text(pos.x.toFixed(2));
-        $("#y").text(pos.y.toFixed(2));
 
         if (item) {
+            $("#x").text(pos.x.toFixed(2));
+            $("#y").text(pos.y.toFixed(2));
             if (previousPoint != item.dataIndex) {
                 previousPoint = item.dataIndex;
 
@@ -80,11 +82,84 @@ $(function start_graph() {
     var graph = $("#graph");
     var plot = $.plot(graph, [d1], options2);
     var t;
+    properties_selection = {};
+
+    function handle_prop_select_change() {
+        properties_selection = {}
+        $('.prop_select_box option:selected').each(function(){
+            var type_name = $(this).attr('class');
+            var type_value = $(this).text();
+            if (!(type_name in properties_selection)){
+                properties_selection[type_name] = [];
+            }
+            properties_selection[type_name].push(type_value)
+        })
+    }
+
+    function prepare_prop_type_value(type, value) {
+        // Ensures the type and value have the type and value
+        var selector_id = "prop_select_" + type;
+        var selector_item_id = selector_id + '_value_' + value;
+        var select_box = $('#' + selector_id)
+        if (select_box.length == 0) {
+            var select_box_text = '<select multiple class="prop_select_box" id="'
+                select_box_text += selector_id
+                select_box_text += '" size=5></select>'
+            rollup_props.append(select_box_text);
+            select_box = $('#' + selector_id);
+            select_box.change(handle_prop_select_change)
+
+        }
+        var select_box_item = $('#' +  selector_item_id);
+        if (select_box_item.length == 0) {
+            var select_item_text = '<option selected value="' + value + '" id="'
+                select_item_text += selector_item_id +'"'
+                select_item_text += ' class="' + type
+                select_item_text += '">' + value + '</option>'
+            select_box.append(select_item_text);
+            select_box_item = $('#' +  selector_item_id);
+            select_box_item.pms_type = type
+
+        }
+        select_box.change();
+
+    }
+
+    function update_rollup_props(rollups) {
+        for (var i=0; i < rollups.length; i++){
+            var rollup = rollups[i];
+            for ( prop_type in rollup.pms_properties ) {
+                var prop_value = rollup.pms_properties[prop_type];
+                prepare_prop_type_value(prop_type, prop_value);
+            }
+        }
+    }
+
+    function get_selected_data(rollups) {
+        var to_return = [];
+        for (var i=0; i < rollups.length; i++){
+            var rollup = rollups[i];
+            rollup.failed = false;
+            for (property in properties_selection){
+                var value = rollup.pms_properties[property]
+                var acceptable_values = properties_selection[property]
+                if(jQuery.inArray(value, acceptable_values) == -1)
+                    rollup.failed = true
+            }
+            if (!rollup.failed)
+                to_return.push(rollup);
+        }
+
+        return to_return;
+    }
+
     function update() {
         var hours = parseInt(number_of_days) * 24;
         url = '/rollup/latest/' + rollup_type + '/hourly/' + hours;
         $.getJSON(url, {}, function(data){
-            plot.setData(data['response']);
+            update_rollup_props(data['response']);
+            var drawable_data = get_selected_data(data['response']);
+            plot.setData(drawable_data);
             plot.setupGrid();
             plot.draw();
             $('#last_updated').text(new Date().toString());
