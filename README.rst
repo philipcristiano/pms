@@ -43,3 +43,14 @@ The aggregration properties are to define the rollups.  The second level is the
 name of the rollup and properties is a list of fields to rollup. PMS will
 attempt to rollup any events added. The event will be rolled up if it has
 properties matching the set defined for a rollup.
+
+Recording Events
+----------------
+
+Events are recorded by posting a JSON document to ``/record``. If you include
+all fields for an aggregate rollup it will create/update the corresponding
+record.
+
+Sample:
+
+    curl -v -X POST http://localhost/record -H "Content-Type: application/json" -d '{"key": "value"}'
