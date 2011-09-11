@@ -46,7 +46,6 @@ def next(oid):
 def query():
     start = int(request.args.get('pms_js_time')) /1000
     start = datetime.datetime.utcfromtimestamp(start)
-    #start -= datetime.timedelta(hours=4)
     end = start + datetime.timedelta(hours=1)
 
     start_id = ObjectId.from_datetime(start)
@@ -152,7 +151,6 @@ def generate_rollup(event, name, properties):
     }
     for prop in properties:
         if not prop in event:
-            print 'missing', prop
             return
         doc['properties'][prop] = event[prop]
 
