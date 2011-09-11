@@ -1,5 +1,6 @@
 from dingus import Dingus, DingusTestCase
 
+from nose.tools import eq_
 from pms.app import *
 import pms.app as mod
 
@@ -37,3 +38,71 @@ class WhenMappingDataSetToLocalTime(DingusTestCase(map_dataset_to_local_time)):
 
     def should_create_timedelta(self):
         assert mod.datetime.calls('timedelta', minutes=120)
+
+
+####
+##
+## index
+##
+####
+
+class WhenGettingIndexPage(DingusTestCase(index)):
+
+    def setup(self):
+        super(WhenGettingIndexPage, self).setup()
+
+        self.returned = index()
+
+    def should_render_template(self):
+        assert mod.render_template.calls('()',
+            'graph.jinja2',
+            config=mod.config
+        )
+
+    def should_return_rendered_template(self):
+        assert self.returned == mod.render_template()
+
+
+####
+##
+## flatten
+##
+####
+
+class WhenFlattening(object):
+
+    def setup(self):
+        self.data = Dingus('data')
+
+        self.returned = flatten(self.data)
+
+    def should_create_new_dict(self):
+        for key in self.data:
+            eq_(self.returned[key], self.data[key])
+
+
+####
+##
+## generate_rollups
+##
+####
+
+class WhenGeneratingRollups(DingusTestCase(generate_rollups)):
+
+    def setup(self):
+        super(WhenGeneratingRollups, self).setup()
+        self.name = Dingus('name')
+        self.rollup_config = Dingus('rollup_config')
+        self.rollups = {self.name: self.rollup_config}
+        mod.config['aggregation'] = self.rollups
+        self.event = Dingus('event')
+
+        generate_rollups(self.event)
+
+    def should_generate_rollups(self):
+        for name, rollup_config in mod.config['aggregation'].items():
+            assert mod.generate_rollup.calls('()',
+                self.event,
+                self.name,
+                self.rollup_config['properties']
+            )

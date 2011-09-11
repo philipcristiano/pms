@@ -136,8 +136,7 @@ def generate_rollups(event):
     """Try to create a rollup for the event"""
     t = event['_id'].generation_time
     for name, rollup_config in config['aggregation'].items():
-        properties = rollup_config['properties']
-        generate_rollup(event, name, properties)
+        generate_rollup(event, name, rollup_config['properties'])
 
 def generate_rollup(event, name, properties):
     """Generate a single rollup for this event matching the properties"""
@@ -227,6 +226,6 @@ def to_epoch(dt):
 
     return time.mktime(dt.timetuple())
 
-if __name__ == "__main__":
+if __name__ == "__main__": #pragma: no cover
     app.debug = True
     app.run()
